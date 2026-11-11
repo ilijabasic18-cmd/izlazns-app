@@ -18,55 +18,77 @@ app.use(session({
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// --- Simulated chat participant ---
-// Note: this is a scripted responder (templated replies), not a live AI model call.
-const CHAT_BOT_PERSONAS = ['Nemanja Ilić', 'Milica Radovanović', 'Aleksandar Jovanović', 'Jelena Mitrović'];
+// --- Simulated chat participants ---
+// Note: these are scripted responders (templated replies), not a live AI model call.
+// Same handle pool as the Forum, so it reads as one consistent community.
+const CHAT_BOT_PERSONAS = ['Jovana_92', 'Marko.NS', 'Stefan_23', 'Tijana.m', 'Nikola_Pet', 'Ana93', 'Jovan_K', 'Marija_S'];
 
-function pickBotPersona(eventId) {
-  return CHAT_BOT_PERSONAS[eventId % CHAT_BOT_PERSONAS.length];
+function pickBotPersona(eventId, offset = 0) {
+  return CHAT_BOT_PERSONAS[(eventId + offset) % CHAT_BOT_PERSONAS.length];
 }
 
-function generateBotReply(userText, event) {
+function generateBotReply(userText, event, addressName) {
   const lower = userText.toLowerCase();
   const venueName = event.venue ? event.venue.name : '';
   const title = typeof event.title === 'object' ? (event.title.sr || event.title.en) : event.title;
+  const mention = addressName && Math.random() < 0.6 ? `@${addressName} ` : '';
 
   if (/kada|vreme|sat|počinj/.test(lower)) {
     const d = new Date(event.datetime);
     const hh = String(d.getHours()).padStart(2, '0');
     const min = String(d.getMinutes()).padStart(2, '0');
-    return `Koliko znam, počinje u ${hh}:${min}, al' dođite malo ranije za bolja mesta 😊`;
+    return `${mention}Koliko znam, počinje u ${hh}:${min}, al' dođite malo ranije za bolja mesta 😊`;
   }
   if (/cena|ulaz|plać|novac|košta/.test(lower)) {
-    return 'Mislim da je ulaz slobodan, ali najbolje je proveriti na licu mesta.';
+    return `${mention}Mislim da je ulaz slobodan, ali najbolje je proveriti na licu mesta.`;
   }
   if (/ekipa|tim|partner|solo|sam\b|sama\b/.test(lower)) {
-    return 'Ja bih se priključio/la, samo recite gde i kada da dođem!';
+    return `${mention}Ja bih se priključio/la, samo recite gde i kada da dođem!`;
   }
   if (/gde|adresa|lokacij/.test(lower)) {
-    return venueName ? `Dešava se u ${venueName}, vidimo se tamo!` : 'Proverite adresu lokala u opisu događaja.';
+    return venueName ? `${mention}Dešava se u ${venueName}, vidimo se tamo!` : `${mention}Proverite adresu lokala u opisu događaja.`;
   }
 
   const generic = [
-    'Ja definitivno dolazim, vidimo se tamo! 🙌',
-    `Čuo/la sam da je prošli put na "${title}" bilo odlično, jedva čekam!`,
-    'Nisam još sigur(na), ali javiću se čim znam.',
-    'Ko ide, nek se javi ovde da se nađemo pre početka!',
-    'Super ideja, računajte i na mene.',
-    'Hvala na info, vidimo se tamo!'
+    `${mention}Ja definitivno dolazim, vidimo se tamo! 🙌`,
+    `${mention}Čuo/la sam da je prošli put na "${title}" bilo odlično, jedva čekam!`,
+    `${mention}Nisam još sigur(na), ali javiću se čim znam.`,
+    `${mention}Ko ide, nek se javi ovde da se nađemo pre početka!`,
+    `${mention}Super ideja, računajte i na mene.`,
+    `${mention}Hvala na info, vidimo se tamo!`
   ];
   return generic[Math.floor(Math.random() * generic.length)];
 }
 
-function scheduleBotReply(eventId, userText) {
-  const delay = 1400 + Math.random() * 1600;
+function generateFollowUpReply(otherPersona) {
+  const followUps = [
+    `Slažem se sa @${otherPersona}, vidimo se tamo!`,
+    `+1 za ovo, i ja dolazim 🙌`,
+    `@${otherPersona} tačno tako, super ideja.`,
+    `Ja sam za, ko je još za?`,
+    `Haha dobro, računajte i na mene.`
+  ];
+  return followUps[Math.floor(Math.random() * followUps.length)];
+}
+
+function scheduleBotReply(eventId, userText, realUserName) {
+  const delay1 = 1400 + Math.random() * 1600;
   setTimeout(() => {
     const event = db.getEventById(eventId);
     if (!event) return;
-    const persona = pickBotPersona(eventId);
-    const reply = generateBotReply(userText, event);
-    db.addChatMessage({ eventId, authorName: persona, text: reply });
-  }, delay);
+    const persona1 = pickBotPersona(eventId, 0);
+    const reply1 = generateBotReply(userText, event, realUserName);
+    db.addChatMessage({ eventId, authorName: persona1, text: reply1 });
+
+    if (Math.random() < 0.7) {
+      const delay2 = 1200 + Math.random() * 1400;
+      setTimeout(() => {
+        const persona2 = pickBotPersona(eventId, 1);
+        const reply2 = generateFollowUpReply(persona1);
+        db.addChatMessage({ eventId, authorName: persona2, text: reply2 });
+      }, delay2);
+    }
+  }, delay1);
 }
 
 function requireAuth(req, res, next) {
@@ -216,7 +238,7 @@ app.post('/api/events/:id/chat', requireAuth, (req, res) => {
   }
   const user = db.getUserById(req.session.userId);
   const msg = db.addChatMessage({ eventId, authorName: user.name, text: text.trim() });
-  scheduleBotReply(eventId, text.trim());
+  scheduleBotReply(eventId, text.trim(), user.name);
   res.json({ message: msg });
 });
 

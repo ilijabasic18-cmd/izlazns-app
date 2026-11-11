@@ -722,12 +722,14 @@ async function openChatModal(eventId, eventTitle) {
         messagesEl.innerHTML = refreshed.messages.map(renderChatMsg).join('');
         messagesEl.scrollTop = messagesEl.scrollHeight;
 
-        setTimeout(async () => {
+        const refreshChat = async () => {
           if (!document.body.contains(messagesEl)) return;
           const latest = await api(`/api/events/${eventId}/chat`);
           messagesEl.innerHTML = latest.messages.map(renderChatMsg).join('');
           messagesEl.scrollTop = messagesEl.scrollHeight;
-        }, 3000);
+        };
+        setTimeout(refreshChat, 3200);
+        setTimeout(refreshChat, 5800);
       } catch (err) {
         showToast(err.error || t('toast_generic_error'));
       }
