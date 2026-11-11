@@ -1,0 +1,29 @@
+Ovde ubacuj prave fotografije lokala kada ih dobijes.
+
+Pravilo imenovanja: fajl mora imati TACNO isti naziv (slug) kao lokal, u .jpg ili .png formatu.
+Aplikacija prvo trazi "<slug>.jpg", pa "<slug>.png", a ako ih ne nadje prikazuje placeholder "<slug>.svg".
+
+Spisak slugova (redom kako su u aplikaciji):
+djardin.jpg
+dva-galeba.jpg
+madison.jpg
+makijato.jpg
+atrijum.jpg
+lazino-tele.jpg
+shootiranje.jpg
+london-pub.jpg
+gregors-pub.jpg
+rebel.jpg
+foxtrot.jpg
+beza.jpg
+utopia.jpg
+kriva-marta.jpg
+sting.jpg
+kafemat.jpg
+strand-caffe.jpg
+dunavska-kafana.jpg
+zmaj-caffe.jpg
+tvrdjava-lounge.jpg
+
+Primer: ako imas sliku za "Dva galeba", sacuvaj je kao "dva-galeba.jpg" u ovom folderu
+i automatski ce zameniti placeholder, bez ikakve izmene koda.

@@ -1,0 +1,2 @@
+Ovde ubaci logo aplikacije kao fajl "logo.png" (preporuceno: providna pozadina, visina ~100-200px).
+Aplikacija ce ga automatski prikazati u gornjem levom uglu umesto teksta "IzlazNS".

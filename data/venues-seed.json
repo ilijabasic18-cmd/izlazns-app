@@ -1,0 +1,162 @@
+[
+  {
+    "slug": "djardin",
+    "name": "Giardino Club",
+    "type": "klub",
+    "address": "Bulevar Mihajla Pupina (krov Bazara), Novi Sad",
+    "lat": 45.2536861,
+    "lng": 19.8448741
+  },
+  {
+    "slug": "dva-galeba",
+    "name": "Dva galeba",
+    "type": "kafana",
+    "address": "Štrand, Novi Sad",
+    "lat": 45.2363112,
+    "lng": 19.8465411
+  },
+  {
+    "slug": "madison",
+    "name": "Madison",
+    "type": "klub",
+    "address": "Spens, Sutjeska 2, Novi Sad",
+    "lat": 45.2471273,
+    "lng": 19.8454852
+  },
+  {
+    "slug": "makijato",
+    "name": "Macchiato",
+    "type": "kafic",
+    "address": "Zmaj Jovina 15, Novi Sad",
+    "lat": 45.2563254,
+    "lng": 19.8469941
+  },
+  {
+    "slug": "gerila-bar",
+    "name": "Gerila Bar",
+    "type": "bar",
+    "address": "Trifkovićev trg 3, Novi Sad",
+    "lat": 45.2571105,
+    "lng": 19.8437521
+  },
+  {
+    "slug": "lazino-tele",
+    "name": "Lazino Tele",
+    "type": "pab",
+    "address": "Laze Telečkog, Novi Sad",
+    "lat": 45.2566182,
+    "lng": 19.8456423
+  },
+  {
+    "slug": "shootiranje",
+    "name": "Shootiranje",
+    "type": "bar",
+    "address": "Pašićeva 6, Novi Sad",
+    "lat": 45.2584887,
+    "lng": 19.846017
+  },
+  {
+    "slug": "london-pub",
+    "name": "London Pub",
+    "type": "pab",
+    "address": "Laze Telečkog 15, Novi Sad",
+    "lat": 45.2567079,
+    "lng": 19.8451905
+  },
+  {
+    "slug": "gregors-pub",
+    "name": "Gregor's Pub",
+    "type": "pab",
+    "address": "Nikole Pašića, Novi Sad",
+    "lat": 45.2574768,
+    "lng": 19.8475141
+  },
+  {
+    "slug": "rebel",
+    "name": "Rebel",
+    "type": "bar",
+    "address": "Trg Slobode, Novi Sad",
+    "lat": 45.255115,
+    "lng": 19.845027
+  },
+  {
+    "slug": "foxtrot",
+    "name": "Foxtrot",
+    "type": "klub",
+    "address": "Kod Elektrotehničke škole, Novi Sad",
+    "lat": 45.2496401,
+    "lng": 19.8348434
+  },
+  {
+    "slug": "beza",
+    "name": "Beza",
+    "type": "kafic",
+    "address": "Jevrejska 11, Novi Sad",
+    "lat": 45.2529997,
+    "lng": 19.8404076
+  },
+  {
+    "slug": "utopia",
+    "name": "Kulturni centar Utopia",
+    "type": "kulturni-centar",
+    "address": "Petra Drapšina 1, Novi Sad",
+    "lat": 45.2526839,
+    "lng": 19.8419035
+  },
+  {
+    "slug": "kriva-marta",
+    "name": "Kriva Marta Blues Pub",
+    "type": "pab",
+    "address": "Ignjata Pavlasa, Novi Sad",
+    "lat": 45.2550462,
+    "lng": 19.8490909
+  },
+  {
+    "slug": "sting",
+    "name": "Caffe Sting",
+    "type": "kafic",
+    "address": "Bulevar Oslobođenja, Novi Sad",
+    "lat": 45.2543867,
+    "lng": 19.8355462
+  },
+  {
+    "slug": "kafemat",
+    "name": "Kafemat",
+    "type": "kafic",
+    "address": "Spens, Novi Sad",
+    "lat": 45.2471273,
+    "lng": 19.8454852
+  },
+  {
+    "slug": "strand-caffe",
+    "name": "Štrand Caffe",
+    "type": "kafic",
+    "address": "Kej, Štrand, Novi Sad",
+    "lat": 45.2363112,
+    "lng": 19.8465411
+  },
+  {
+    "slug": "dunavska-kafana",
+    "name": "Dunavska Kafana",
+    "type": "kafana",
+    "address": "Dunavska 22, Novi Sad",
+    "lat": 45.2560273,
+    "lng": 19.8517495
+  },
+  {
+    "slug": "zenit-books",
+    "name": "Zenit Books Bar",
+    "type": "knjizara-bar",
+    "address": "Njegoševa 24, Novi Sad",
+    "lat": 45.2569986,
+    "lng": 19.8426561
+  },
+  {
+    "slug": "tvrdjava-lounge",
+    "name": "Tvrđava Lounge",
+    "type": "lounge-bar",
+    "address": "Petrovaradinska tvrđava, Novi Sad",
+    "lat": 45.2521551,
+    "lng": 19.8638279
+  }
+]

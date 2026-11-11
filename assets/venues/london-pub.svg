@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 260">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0891b2"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="260" fill="url(#g)"/>
+  <circle cx="330" cy="40" r="70" fill="rgba(255,255,255,0.08)"/>
+  <circle cx="40" cy="230" r="90" fill="rgba(255,255,255,0.08)"/>
+  <text x="200" y="145" font-family="Segoe UI, Arial, sans-serif" font-size="64" font-weight="700"
+        fill="rgba(255,255,255,0.92)" text-anchor="middle" dominant-baseline="middle">LP</text>
+  <text x="200" y="225" font-family="Segoe UI, Arial, sans-serif" font-size="15" letter-spacing="2"
+        fill="rgba(255,255,255,0.75)" text-anchor="middle">PLACEHOLDER SLIKA</text>
+</svg>
