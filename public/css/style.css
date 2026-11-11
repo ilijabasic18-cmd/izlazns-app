@@ -577,6 +577,7 @@ a { color: inherit; }
   padding: 10px 0 0;
   cursor: var(--cursor-fun);
 }
+.forum-login-hint-inline { margin: 8px 0 0; padding: 10px 14px; font-size: 12.5px; }
 .forum-reply-form { display: flex; gap: 8px; margin-top: 8px; }
 .forum-reply-form input {
   flex: 1;

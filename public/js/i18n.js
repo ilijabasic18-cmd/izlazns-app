@@ -62,7 +62,8 @@ const UI = {
     chat_btn_label: 'Chat',
     toast_post_sent: 'Oglas je objavljen!',
     forum_reply_btn: 'Odgovori',
-    forum_reply_placeholder: 'Napiši odgovor...'
+    forum_reply_placeholder: 'Napiši odgovor...',
+    forum_reply_login_hint: 'Uloguj se da bi odgovorio/la.'
   },
   en: {
     nav_home: 'Home',
@@ -127,7 +128,8 @@ const UI = {
     chat_btn_label: 'Chat',
     toast_post_sent: 'Your post is live!',
     forum_reply_btn: 'Reply',
-    forum_reply_placeholder: 'Write a reply...'
+    forum_reply_placeholder: 'Write a reply...',
+    forum_reply_login_hint: 'Log in to reply.'
   }
 };
 

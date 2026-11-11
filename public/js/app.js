@@ -585,13 +585,13 @@ function renderForumPost(post) {
       </div>
       <p class="forum-text">${post.text}</p>
       ${repliesHtml}
+      <button type="button" class="forum-reply-toggle" data-reply-toggle="${post.id}">${t('forum_reply_btn')}</button>
       ${state.user ? `
-        <button type="button" class="forum-reply-toggle" data-reply-toggle="${post.id}">${t('forum_reply_btn')}</button>
         <form class="forum-reply-form" data-reply-form="${post.id}" hidden>
           <input type="text" placeholder="${t('forum_reply_placeholder')}" required />
           <button class="btn btn-primary" type="submit">${t('chat_send')}</button>
         </form>
-      ` : ''}
+      ` : `<div class="forum-login-hint forum-login-hint-inline" data-reply-login="${post.id}" hidden>${t('forum_reply_login_hint')}</div>`}
     </div>
   `;
 }
@@ -643,8 +643,11 @@ async function loadAndRenderForumList() {
 
   list.querySelectorAll('[data-reply-toggle]').forEach(btn => {
     btn.onclick = () => {
-      const form = list.querySelector(`[data-reply-form="${btn.dataset.replyToggle}"]`);
+      const id = btn.dataset.replyToggle;
+      const form = list.querySelector(`[data-reply-form="${id}"]`);
+      const loginHint = list.querySelector(`[data-reply-login="${id}"]`);
       if (form) form.hidden = !form.hidden;
+      if (loginHint) loginHint.hidden = !loginHint.hidden;
     };
   });
   list.querySelectorAll('[data-reply-form]').forEach(form => {
