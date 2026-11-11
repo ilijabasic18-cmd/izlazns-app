@@ -175,11 +175,28 @@ function addForumPost({ authorName, text }) {
     id: nextId(db.forumPosts),
     authorName,
     text,
+    replies: [],
     createdAt: new Date().toISOString()
   };
   db.forumPosts.push(post);
   save(db);
   return post;
+}
+
+function addForumReply(postId, { authorName, text }) {
+  const db = load();
+  const post = (db.forumPosts || []).find(p => p.id === postId);
+  if (!post) return null;
+  if (!post.replies) post.replies = [];
+  const reply = {
+    id: nextId(post.replies),
+    authorName,
+    text,
+    createdAt: new Date().toISOString()
+  };
+  post.replies.push(reply);
+  save(db);
+  return reply;
 }
 
 // --- Event chat ---
@@ -237,6 +254,7 @@ module.exports = {
   addContactMessage,
   getForumPosts,
   addForumPost,
+  addForumReply,
   getChatMessages,
   addChatMessage
 };

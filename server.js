@@ -18,6 +18,57 @@ app.use(session({
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.use(express.static(path.join(__dirname, 'public')));
 
+// --- Simulated chat participant ---
+// Note: this is a scripted responder (templated replies), not a live AI model call.
+const CHAT_BOT_PERSONAS = ['Nemanja Ilić', 'Milica Radovanović', 'Aleksandar Jovanović', 'Jelena Mitrović'];
+
+function pickBotPersona(eventId) {
+  return CHAT_BOT_PERSONAS[eventId % CHAT_BOT_PERSONAS.length];
+}
+
+function generateBotReply(userText, event) {
+  const lower = userText.toLowerCase();
+  const venueName = event.venue ? event.venue.name : '';
+  const title = typeof event.title === 'object' ? (event.title.sr || event.title.en) : event.title;
+
+  if (/kada|vreme|sat|počinj/.test(lower)) {
+    const d = new Date(event.datetime);
+    const hh = String(d.getHours()).padStart(2, '0');
+    const min = String(d.getMinutes()).padStart(2, '0');
+    return `Koliko znam, počinje u ${hh}:${min}, al' dođite malo ranije za bolja mesta 😊`;
+  }
+  if (/cena|ulaz|plać|novac|košta/.test(lower)) {
+    return 'Mislim da je ulaz slobodan, ali najbolje je proveriti na licu mesta.';
+  }
+  if (/ekipa|tim|partner|solo|sam\b|sama\b/.test(lower)) {
+    return 'Ja bih se priključio/la, samo recite gde i kada da dođem!';
+  }
+  if (/gde|adresa|lokacij/.test(lower)) {
+    return venueName ? `Dešava se u ${venueName}, vidimo se tamo!` : 'Proverite adresu lokala u opisu događaja.';
+  }
+
+  const generic = [
+    'Ja definitivno dolazim, vidimo se tamo! 🙌',
+    `Čuo/la sam da je prošli put na "${title}" bilo odlično, jedva čekam!`,
+    'Nisam još sigur(na), ali javiću se čim znam.',
+    'Ko ide, nek se javi ovde da se nađemo pre početka!',
+    'Super ideja, računajte i na mene.',
+    'Hvala na info, vidimo se tamo!'
+  ];
+  return generic[Math.floor(Math.random() * generic.length)];
+}
+
+function scheduleBotReply(eventId, userText) {
+  const delay = 1400 + Math.random() * 1600;
+  setTimeout(() => {
+    const event = db.getEventById(eventId);
+    if (!event) return;
+    const persona = pickBotPersona(eventId);
+    const reply = generateBotReply(userText, event);
+    db.addChatMessage({ eventId, authorName: persona, text: reply });
+  }, delay);
+}
+
 function requireAuth(req, res, next) {
   if (!req.session.userId) return res.status(401).json({ error: 'Niste ulogovani.' });
   next();
@@ -139,6 +190,18 @@ app.post('/api/forum', requireAuth, (req, res) => {
   res.json({ post });
 });
 
+app.post('/api/forum/:id/reply', requireAuth, (req, res) => {
+  const postId = Number(req.params.id);
+  const { text } = req.body || {};
+  if (!text || !text.trim()) {
+    return res.status(400).json({ error: 'Unesi tekst odgovora.' });
+  }
+  const user = db.getUserById(req.session.userId);
+  const reply = db.addForumReply(postId, { authorName: user.name, text: text.trim() });
+  if (!reply) return res.status(404).json({ error: 'Oglas ne postoji.' });
+  res.json({ reply });
+});
+
 // --- Event chat ---
 app.get('/api/events/:id/chat', (req, res) => {
   const eventId = Number(req.params.id);
@@ -153,6 +216,7 @@ app.post('/api/events/:id/chat', requireAuth, (req, res) => {
   }
   const user = db.getUserById(req.session.userId);
   const msg = db.addChatMessage({ eventId, authorName: user.name, text: text.trim() });
+  scheduleBotReply(eventId, text.trim());
   res.json({ message: msg });
 });
 

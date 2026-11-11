@@ -141,5 +141,10 @@
   { "venueSlug": "tvrdjava-lounge", "type": "degustacija",
     "title": { "sr": "Degustacija vina", "en": "Wine Tasting" },
     "datetime": "2026-11-29T19:00:00",
-    "description": { "sr": "Degustacija vina lokalnih vinarija uz pogled na grad.", "en": "A tasting of local wines with a view over the city." } }
+    "description": { "sr": "Degustacija vina lokalnih vinarija uz pogled na grad.", "en": "A tasting of local wines with a view over the city." } },
+
+  { "venueSlug": "makijato", "type": "kviz",
+    "title": { "sr": "Minut Znanja", "en": "Minute of Knowledge" },
+    "datetime": "2026-11-11T21:00:00",
+    "description": { "sr": "Brzi kviz opšteg znanja za pojedince i ekipe, prijava na licu mesta.", "en": "A quick general-knowledge quiz for solo players and teams, sign up on site." } }
 ]

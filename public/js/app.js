@@ -567,6 +567,16 @@ function renderContact() {
 // ---------- Forum ----------
 
 function renderForumPost(post) {
+  const replies = post.replies || [];
+  const repliesHtml = replies.length
+    ? `<div class="forum-replies">${replies.map(r => `
+        <div class="forum-reply">
+          <span class="forum-reply-author">${r.authorName}</span>
+          <span class="forum-reply-text">${r.text}</span>
+          <span class="forum-reply-time">${timeAgo(r.createdAt)}</span>
+        </div>`).join('')}</div>`
+    : '';
+
   return `
     <div class="forum-post">
       <div class="forum-post-head">
@@ -574,6 +584,14 @@ function renderForumPost(post) {
         <span class="forum-time">${timeAgo(post.createdAt)}</span>
       </div>
       <p class="forum-text">${post.text}</p>
+      ${repliesHtml}
+      ${state.user ? `
+        <button type="button" class="forum-reply-toggle" data-reply-toggle="${post.id}">${t('forum_reply_btn')}</button>
+        <form class="forum-reply-form" data-reply-form="${post.id}" hidden>
+          <input type="text" placeholder="${t('forum_reply_placeholder')}" required />
+          <button class="btn btn-primary" type="submit">${t('chat_send')}</button>
+        </form>
+      ` : ''}
     </div>
   `;
 }
@@ -622,6 +640,28 @@ async function loadAndRenderForumList() {
   list.innerHTML = data.posts.length
     ? data.posts.map(renderForumPost).join('')
     : `<div class="no-events">${t('forum_empty')}</div>`;
+
+  list.querySelectorAll('[data-reply-toggle]').forEach(btn => {
+    btn.onclick = () => {
+      const form = list.querySelector(`[data-reply-form="${btn.dataset.replyToggle}"]`);
+      if (form) form.hidden = !form.hidden;
+    };
+  });
+  list.querySelectorAll('[data-reply-form]').forEach(form => {
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+      const input = form.querySelector('input');
+      const text = input.value.trim();
+      if (!text) return;
+      const postId = form.dataset.replyForm;
+      try {
+        await api(`/api/forum/${postId}/reply`, { method: 'POST', body: JSON.stringify({ text }) });
+        await loadAndRenderForumList();
+      } catch (err) {
+        showToast(err.error || t('toast_generic_error'));
+      }
+    };
+  });
 }
 
 // ---------- Event chat ----------
@@ -678,6 +718,13 @@ async function openChatModal(eventId, eventTitle) {
         const refreshed = await api(`/api/events/${eventId}/chat`);
         messagesEl.innerHTML = refreshed.messages.map(renderChatMsg).join('');
         messagesEl.scrollTop = messagesEl.scrollHeight;
+
+        setTimeout(async () => {
+          if (!document.body.contains(messagesEl)) return;
+          const latest = await api(`/api/events/${eventId}/chat`);
+          messagesEl.innerHTML = latest.messages.map(renderChatMsg).join('');
+          messagesEl.scrollTop = messagesEl.scrollHeight;
+        }, 3000);
       } catch (err) {
         showToast(err.error || t('toast_generic_error'));
       }
