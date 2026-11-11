@@ -422,9 +422,24 @@ a { color: inherit; }
 }
 .event-time { font-size: 13px; color: var(--cream-dim); font-weight: 600; }
 .event-desc { font-size: 13.5px; color: var(--cream-dim); line-height: 1.55; font-weight: 400; }
-.event-actions { display: flex; justify-content: flex-end; margin-top: 4px; }
+.event-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; }
 .event-actions .btn { padding: 6px 14px; font-size: 12px; }
 .no-events { font-size: 13px; color: var(--cream-dim); font-style: italic; }
+
+.event-chat-btn {
+  background: var(--surface);
+  border: 2px solid var(--border);
+  color: var(--cream-dim);
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: var(--cursor-fun);
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
 
 /* Auth */
 .auth-wrap {
@@ -488,6 +503,85 @@ a { color: inherit; }
   color: var(--cream-dim);
 }
 .contact-info strong { color: var(--mustard); }
+
+/* Forum */
+.forum-wrap { max-width: 760px; margin: 0 auto; padding: 24px; }
+.forum-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  margin-bottom: 22px;
+}
+.forum-form textarea {
+  width: 100%;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-size: 14px;
+  resize: vertical;
+  min-height: 72px;
+}
+.forum-form textarea:focus { outline: none; border-color: var(--mustard); }
+.forum-form .btn { align-self: flex-end; }
+.forum-login-hint {
+  background: var(--card);
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  color: var(--cream-dim);
+  font-size: 13.5px;
+  margin-bottom: 22px;
+  text-align: center;
+}
+.forum-list { display: flex; flex-direction: column; gap: 12px; }
+.forum-post {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  animation: card-in 0.4s var(--ease-pop) both;
+}
+.forum-post-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+.forum-author { font-weight: 800; color: var(--mustard); font-size: 13.5px; }
+.forum-time { font-size: 12px; color: var(--cream-dim); flex-shrink: 0; }
+.forum-text { margin: 0; font-size: 14.5px; line-height: 1.55; }
+
+/* Event chat (inside modal) */
+.modal-box-chat { max-width: 480px; }
+.modal-box-chat .sub { color: var(--cream-dim); font-size: 13.5px; margin-top: -8px; margin-bottom: 14px; }
+.chat-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 280px;
+  overflow-y: auto;
+  margin-bottom: 14px;
+  padding-right: 4px;
+}
+.chat-msg { background: var(--surface); border: 2px solid var(--border); border-radius: 10px; padding: 8px 12px; }
+.chat-msg-author { font-weight: 800; color: var(--rust); font-size: 12.5px; }
+.chat-msg-text { margin: 4px 0 0; font-size: 14px; line-height: 1.45; }
+.chat-msg-time { font-size: 11px; color: var(--cream-dim); }
+.chat-input-row { display: flex; gap: 8px; margin-bottom: 14px; }
+.chat-input-row input {
+  flex: 1;
+  min-width: 0;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-size: 14px;
+}
+.chat-input-row input:focus { outline: none; border-color: var(--mustard); }
 
 /* Modal */
 .modal-overlay {
@@ -597,6 +691,7 @@ a { color: inherit; }
   }
   .card:hover .card-img-wrap img { transform: scale(1.04); }
   .event-row:hover { border-color: var(--rust); }
+  .event-chat-btn:hover { border-color: var(--rust); color: var(--rust); }
   .map-pin:hover span { transform: rotate(-45deg) scale(1.15); }
 }
 

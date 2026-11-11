@@ -124,6 +124,38 @@ app.get('/api/my-signups', requireAuth, (req, res) => {
   res.json({ signups: db.getUserSignups(req.session.userId) });
 });
 
+// --- Forum (oglasi) ---
+app.get('/api/forum', (req, res) => {
+  res.json({ posts: db.getForumPosts() });
+});
+
+app.post('/api/forum', requireAuth, (req, res) => {
+  const { text } = req.body || {};
+  if (!text || !text.trim()) {
+    return res.status(400).json({ error: 'Unesi tekst oglasa.' });
+  }
+  const user = db.getUserById(req.session.userId);
+  const post = db.addForumPost({ authorName: user.name, text: text.trim() });
+  res.json({ post });
+});
+
+// --- Event chat ---
+app.get('/api/events/:id/chat', (req, res) => {
+  const eventId = Number(req.params.id);
+  res.json({ messages: db.getChatMessages(eventId) });
+});
+
+app.post('/api/events/:id/chat', requireAuth, (req, res) => {
+  const eventId = Number(req.params.id);
+  const { text } = req.body || {};
+  if (!text || !text.trim()) {
+    return res.status(400).json({ error: 'Unesi poruku.' });
+  }
+  const user = db.getUserById(req.session.userId);
+  const msg = db.addChatMessage({ eventId, authorName: user.name, text: text.trim() });
+  res.json({ message: msg });
+});
+
 // --- Contact ---
 app.post('/api/contact', (req, res) => {
   const { name, email, message } = req.body || {};

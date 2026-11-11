@@ -2,6 +2,7 @@ const UI = {
   sr: {
     nav_home: 'Početna',
     nav_map: 'Mapa lokala',
+    nav_forum: 'Forum',
     nav_contact: 'Kontakt',
     map_title: 'Mapa lokala',
     map_subtitle: 'Klikni na pin da vidiš detalje o lokalu i predstojeće događaje.',
@@ -46,11 +47,25 @@ const UI = {
     btn_send: 'Pošalji poruku',
     contact_info: 'Možeš nam pisati i direktno na',
     day_at: 'u',
-    loading_label: 'učitavanje zabave…'
+    loading_label: 'učitavanje zabave…',
+    forum_title: 'Forum',
+    forum_subtitle: 'Oglasi za druženje — nađi ekipu za pikado, kviz, izlazak ili bilo šta drugo.',
+    forum_placeholder: 'Npr: Slobodna sam večeras, ko ide na pikado turnir? Treba mi partner!',
+    btn_post: 'Objavi oglas',
+    forum_empty: 'Još nema oglasa. Budi prvi/a!',
+    forum_login_hint: 'Uloguj se da bi postavio/la oglas.',
+    chat_title: 'Chat za događaj',
+    chat_placeholder: 'Napiši poruku...',
+    chat_send: 'Pošalji',
+    chat_empty: 'Još nema poruka. Budi prvi/a!',
+    chat_login_hint: 'Uloguj se da bi pisao/la u chatu.',
+    chat_btn_label: 'Chat',
+    toast_post_sent: 'Oglas je objavljen!'
   },
   en: {
     nav_home: 'Home',
     nav_map: 'Venue Map',
+    nav_forum: 'Forum',
     nav_contact: 'Contact',
     map_title: 'Venue Map',
     map_subtitle: 'Click a pin to see venue details and upcoming events.',
@@ -95,7 +110,20 @@ const UI = {
     btn_send: 'Send message',
     contact_info: 'You can also reach us directly at',
     day_at: 'at',
-    loading_label: 'loading the fun…'
+    loading_label: 'loading the fun…',
+    forum_title: 'Forum',
+    forum_subtitle: 'Meetup board — find a partner for darts, a quiz, a night out or anything else.',
+    forum_placeholder: 'E.g.: Free tonight, anyone up for the darts tournament? Need a partner!',
+    btn_post: 'Post',
+    forum_empty: 'No posts yet. Be the first!',
+    forum_login_hint: 'Log in to post.',
+    chat_title: 'Event chat',
+    chat_placeholder: 'Write a message...',
+    chat_send: 'Send',
+    chat_empty: 'No messages yet. Be the first!',
+    chat_login_hint: 'Log in to chat.',
+    chat_btn_label: 'Chat',
+    toast_post_sent: 'Your post is live!'
   }
 };
 

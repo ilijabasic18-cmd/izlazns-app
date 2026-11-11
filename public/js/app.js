@@ -151,6 +151,23 @@ function caretIcon() {
   </svg>`;
 }
 
+function chatIcon() {
+  return `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M4 4h16a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H9l-5 4v-4H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/>
+  </svg>`;
+}
+
+function timeAgo(iso) {
+  const diffMs = Date.now() - new Date(iso).getTime();
+  const mins = Math.floor(diffMs / 60000);
+  if (mins < 1) return '0 min';
+  if (mins < 60) return `${mins} min`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours} h`;
+  const days = Math.floor(hours / 24);
+  return `${days} d`;
+}
+
 // ---------- Loading screen ----------
 
 function initLoader() {
@@ -182,6 +199,7 @@ function renderNav() {
   mainNavEl.innerHTML = `
     <button type="button" data-nav="app" class="${state.view === 'app' ? 'active' : ''}">${t('nav_home')}</button>
     <button type="button" data-nav="map" class="${state.view === 'map' ? 'active' : ''}">${t('nav_map')}</button>
+    <button type="button" data-nav="forum" class="${state.view === 'forum' ? 'active' : ''}">${t('nav_forum')}</button>
     <button type="button" data-nav="contact" class="${state.view === 'contact' ? 'active' : ''}">${t('nav_contact')}</button>
   `;
   mainNavEl.querySelectorAll('[data-nav]').forEach(btn => {
@@ -221,6 +239,8 @@ function renderAll(animateCards) {
     renderContact();
   } else if (state.view === 'map') {
     renderMapPage();
+  } else if (state.view === 'forum') {
+    renderForum();
   } else if (state.user) {
     renderMain(animateCards);
   } else {
@@ -347,6 +367,9 @@ function renderVenueCard(venue, index = 0, animate = true) {
           <div class="event-time">🗓 ${fmtDateTime(ev.datetime)}</div>
           <div class="event-desc">${localized(ev.description)}</div>
           <div class="event-actions">
+            <button type="button" class="event-chat-btn" data-chat="${ev.id}" data-chat-title="${localized(ev.title)}" aria-label="${t('chat_btn_label')}">
+              ${chatIcon()}
+            </button>
             ${signedUp
               ? `<button class="btn btn-sub" data-cancel="${ev.id}">${t('event_cancel_btn')}</button>`
               : `<button class="btn btn-primary" data-signup="${ev.id}">${t('event_signup_btn')}</button>`}
@@ -399,6 +422,9 @@ function wireVenueCardEvents(container) {
   });
   container.querySelectorAll('[data-cancel]').forEach(btn => {
     btn.onclick = () => cancelSignup(Number(btn.dataset.cancel));
+  });
+  container.querySelectorAll('[data-chat]').forEach(btn => {
+    btn.onclick = () => openChatModal(Number(btn.dataset.chat), btn.dataset.chatTitle);
   });
 }
 
@@ -536,6 +562,127 @@ function renderContact() {
         `<div class="error-msg">${err.error || t('toast_generic_error')}</div>`;
     }
   };
+}
+
+// ---------- Forum ----------
+
+function renderForumPost(post) {
+  return `
+    <div class="forum-post">
+      <div class="forum-post-head">
+        <span class="forum-author">${post.authorName}</span>
+        <span class="forum-time">${timeAgo(post.createdAt)}</span>
+      </div>
+      <p class="forum-text">${post.text}</p>
+    </div>
+  `;
+}
+
+async function renderForum() {
+  appEl.innerHTML = `
+    <div class="hero">
+      <h1>${t('forum_title')}</h1>
+      <p>${t('forum_subtitle')}</p>
+    </div>
+    <div class="forum-wrap">
+      ${state.user ? `
+        <form id="forum-form" class="forum-form">
+          <textarea id="forum-text" placeholder="${t('forum_placeholder')}" required></textarea>
+          <button class="btn btn-primary" type="submit">${t('btn_post')}</button>
+        </form>
+      ` : `<div class="forum-login-hint">${t('forum_login_hint')}</div>`}
+      <div class="forum-list" id="forum-list"></div>
+    </div>
+  `;
+
+  if (state.user) {
+    document.getElementById('forum-form').onsubmit = async (e) => {
+      e.preventDefault();
+      const textEl = document.getElementById('forum-text');
+      const text = textEl.value.trim();
+      if (!text) return;
+      try {
+        await api('/api/forum', { method: 'POST', body: JSON.stringify({ text }) });
+        textEl.value = '';
+        showToast(t('toast_post_sent'));
+        await loadAndRenderForumList();
+      } catch (err) {
+        showToast(err.error || t('toast_generic_error'));
+      }
+    };
+  }
+
+  await loadAndRenderForumList();
+}
+
+async function loadAndRenderForumList() {
+  const list = document.getElementById('forum-list');
+  if (!list) return;
+  const data = await api('/api/forum');
+  list.innerHTML = data.posts.length
+    ? data.posts.map(renderForumPost).join('')
+    : `<div class="no-events">${t('forum_empty')}</div>`;
+}
+
+// ---------- Event chat ----------
+
+function renderChatMsg(msg) {
+  return `
+    <div class="chat-msg">
+      <span class="chat-msg-author">${msg.authorName}</span>
+      <p class="chat-msg-text">${msg.text}</p>
+      <span class="chat-msg-time">${timeAgo(msg.createdAt)}</span>
+    </div>
+  `;
+}
+
+async function openChatModal(eventId, eventTitle) {
+  modalRoot.innerHTML = `
+    <div class="modal-overlay" id="modal-overlay">
+      <div class="modal-box modal-box-chat">
+        <h3>${t('chat_title')}</h3>
+        <p class="sub">${eventTitle}</p>
+        <div class="chat-messages" id="chat-messages"></div>
+        ${state.user ? `
+          <form id="chat-form" class="chat-input-row">
+            <input type="text" id="chat-input" placeholder="${t('chat_placeholder')}" required />
+            <button class="btn btn-primary" type="submit">${t('chat_send')}</button>
+          </form>
+        ` : `<div class="forum-login-hint">${t('chat_login_hint')}</div>`}
+        <button class="btn btn-ghost btn-block" id="modal-cancel">${t('modal_cancel')}</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('modal-overlay').onclick = (e) => {
+    if (e.target.id === 'modal-overlay') closeModal();
+  };
+  document.getElementById('modal-cancel').onclick = closeModal;
+
+  const messagesEl = document.getElementById('chat-messages');
+  const data = await api(`/api/events/${eventId}/chat`);
+  messagesEl.innerHTML = data.messages.length
+    ? data.messages.map(renderChatMsg).join('')
+    : `<div class="no-events">${t('chat_empty')}</div>`;
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+
+  const form = document.getElementById('chat-form');
+  if (form) {
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+      const input = document.getElementById('chat-input');
+      const text = input.value.trim();
+      if (!text) return;
+      try {
+        await api(`/api/events/${eventId}/chat`, { method: 'POST', body: JSON.stringify({ text }) });
+        input.value = '';
+        const refreshed = await api(`/api/events/${eventId}/chat`);
+        messagesEl.innerHTML = refreshed.messages.map(renderChatMsg).join('');
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+      } catch (err) {
+        showToast(err.error || t('toast_generic_error'));
+      }
+    };
+  }
 }
 
 // ---------- Modals ----------

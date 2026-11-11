@@ -1,0 +1,11 @@
+[
+  { "eventId": 3, "authorName": "Jovana_92", "text": "Koliko ljudi može biti u ekipi?", "createdAt": "2026-11-09T19:00:00" },
+  { "eventId": 3, "authorName": "Dva galeba", "text": "Do 5 članova po ekipi, prijava na ulazu.", "createdAt": "2026-11-09T19:10:00" },
+
+  { "eventId": 11, "authorName": "Marko.NS", "text": "Da li se igra pojedinačno ili u parovima?", "createdAt": "2026-11-10T10:00:00" },
+  { "eventId": 11, "authorName": "Lazino Tele", "text": "Može i jedno i drugo, prijave na recepciji do 18h.", "createdAt": "2026-11-10T10:15:00" },
+  { "eventId": 11, "authorName": "Jovan_K", "text": "Ja dolazim sam, ko treba partner nek se javi ovde 👋", "createdAt": "2026-11-10T12:40:00" },
+
+  { "eventId": 19, "authorName": "Nikola_Pet", "text": "Ima li ulaznica ili je slobodan ulaz?", "createdAt": "2026-11-11T08:30:00" },
+  { "eventId": 19, "authorName": "Marija_S", "text": "Slobodan ulaz, bili smo prošli put, odlična atmosfera!", "createdAt": "2026-11-11T09:00:00" }
+]

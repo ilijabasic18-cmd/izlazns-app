@@ -4,6 +4,8 @@ const path = require('path');
 const DB_PATH = path.join(__dirname, 'data', 'db.json');
 const VENUES_SEED = path.join(__dirname, 'data', 'venues-seed.json');
 const EVENTS_SEED = path.join(__dirname, 'data', 'events-seed.json');
+const FORUM_SEED = path.join(__dirname, 'data', 'forum-seed.json');
+const CHAT_SEED = path.join(__dirname, 'data', 'chat-seed.json');
 
 function nextId(items) {
   return items.reduce((max, it) => Math.max(max, it.id), 0) + 1;
@@ -36,7 +38,12 @@ function seed() {
     description: e.description
   }));
 
-  const db = { users: [], venues, events, signups: [], messages: [] };
+  const forumSeed = JSON.parse(fs.readFileSync(FORUM_SEED, 'utf8'));
+  const chatSeed = JSON.parse(fs.readFileSync(CHAT_SEED, 'utf8'));
+  const forumPosts = forumSeed.map((p, i) => ({ id: i + 1, ...p }));
+  const chatMessages = chatSeed.map((m, i) => ({ id: i + 1, ...m }));
+
+  const db = { users: [], venues, events, signups: [], messages: [], forumPosts, chatMessages };
   save(db);
 }
 
@@ -154,6 +161,51 @@ function getSignupCountForEvent(eventId) {
   return db.signups.filter(s => s.eventId === eventId).length;
 }
 
+// --- Forum (oglasi) ---
+function getForumPosts() {
+  const db = load();
+  const posts = db.forumPosts || [];
+  return [...posts].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+}
+
+function addForumPost({ authorName, text }) {
+  const db = load();
+  if (!db.forumPosts) db.forumPosts = [];
+  const post = {
+    id: nextId(db.forumPosts),
+    authorName,
+    text,
+    createdAt: new Date().toISOString()
+  };
+  db.forumPosts.push(post);
+  save(db);
+  return post;
+}
+
+// --- Event chat ---
+function getChatMessages(eventId) {
+  const db = load();
+  const messages = db.chatMessages || [];
+  return messages
+    .filter(m => m.eventId === eventId)
+    .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+}
+
+function addChatMessage({ eventId, authorName, text }) {
+  const db = load();
+  if (!db.chatMessages) db.chatMessages = [];
+  const msg = {
+    id: nextId(db.chatMessages),
+    eventId,
+    authorName,
+    text,
+    createdAt: new Date().toISOString()
+  };
+  db.chatMessages.push(msg);
+  save(db);
+  return msg;
+}
+
 // --- Contact messages ---
 function addContactMessage({ name, email, message }) {
   const db = load();
@@ -182,5 +234,9 @@ module.exports = {
   cancelSignup,
   getUserSignups,
   getSignupCountForEvent,
-  addContactMessage
+  addContactMessage,
+  getForumPosts,
+  addForumPost,
+  getChatMessages,
+  addChatMessage
 };
